@@ -26,6 +26,7 @@ import psutil
 ROOT = Path(__file__).resolve().parent
 VAULTS = ROOT / "vaults"
 VAULT_EXTS = {".txt", ".md", ".log", ".dat", ".doc"}
+ASSET_EXTS = {".webp", ".png", ".jpg", ".jpeg"}  # images the page may load from assets/
 PORT = int(os.environ.get("COGITATOR_PORT", "8077"))
 NO_WINDOW = 0x08000000 if sys.platform == "win32" else 0
 
@@ -243,6 +244,12 @@ class Handler(SimpleHTTPRequestHandler):
         if path in ("/", "/cogitator.html"):
             self.path = "/cogitator.html"
             return super().do_GET()
+        if path.startswith("/assets/"):
+            name = Path(unquote(path[len("/assets/"):])).name  # basename only: no escaping assets/
+            if Path(name).suffix.lower() in ASSET_EXTS and (ROOT / "assets" / name).is_file():
+                self.path = f"/assets/{name}"
+                return super().do_GET()
+            return self.send_json({"error": "not found"}, 404)
         if path == "/api/telemetry":
             q = parse_qs(url.query)
             heartbeat(q.get("client", [""])[0], q.get("model", [""])[0])

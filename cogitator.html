@@ -154,6 +154,38 @@
             100% { top: 100%; }
         }
 
+        /* Servitor portrait: edges fade into the black cogitator housing */
+        .servitor-img {
+            filter: saturate(0.9) contrast(1.05);
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+            user-select: none;
+        }
+
+        /* Bionic lens glow: slow teal while idle, fast red while the servo-brain works */
+        .servitor-eye {
+            position: absolute;
+            left: 50.4%;
+            top: 52.3%;
+            width: 11%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(90, 255, 210, 0.9) 0%, rgba(90, 255, 210, 0.35) 35%, transparent 70%);
+            mix-blend-mode: screen;
+            pointer-events: none;
+            animation: eye-pulse 2.6s ease-in-out infinite;
+        }
+
+        body.brain-busy .servitor-eye {
+            background: radial-gradient(circle, rgba(255, 70, 50, 0.95) 0%, rgba(255, 70, 50, 0.4) 35%, transparent 70%);
+            animation-duration: 0.6s;
+        }
+
+        @keyframes eye-pulse {
+            0%, 100% { opacity: 0.25; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.15); }
+        }
+
         .glow-text {
             text-shadow: 0 0 6px var(--main-color);
         }
@@ -241,8 +273,14 @@
                     </div>
 
                     <!-- Canvas for Servitor Animated Cyber-Skull -->
-                    <div class="relative w-full h-44 bg-black/60 border border-[var(--main-color)] flex items-center justify-center overflow-hidden mb-2">
-                        <canvas id="servitorCanvas" width="320" height="170" class="w-full h-full"></canvas>
+                    <div class="relative w-full h-56 bg-black border border-[var(--main-color)] flex items-center justify-center overflow-hidden mb-2">
+                        <!-- Servitor portrait; the eye glow sits on the bionic lens (coordinates are % of the cropped image) -->
+                        <div id="servitor-portrait" class="relative h-full" style="aspect-ratio: 520 / 650;">
+                            <img src="assets/servitor.webp" alt="Servitor M7-884-THX" class="servitor-img h-full w-full object-cover" draggable="false">
+                            <div class="servitor-eye"></div>
+                        </div>
+                        <!-- HUD layer: targeting reticle locked on the eye, ECG trace -->
+                        <canvas id="servitorCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
                         
                         <!-- Overlay telemetry HUD -->
                         <div class="absolute top-1 left-1 text-[10px] opacity-75 leading-tight pointer-events-none">
@@ -499,98 +537,53 @@
         }
 
         /* -------------------------------------------------------------------------- */
-        /* SERVITOR CYBERNETIC SKULL CANVAS RENDERING                                 */
+        /* SERVITOR PORTRAIT HUD (reticle locked on the bionic eye + ECG trace)       */
         /* -------------------------------------------------------------------------- */
         const canvas = document.getElementById('servitorCanvas');
         const ctx = canvas.getContext('2d');
+        const portrait = document.getElementById('servitor-portrait');
+        const EYE = { x: 0.504, y: 0.523 }; // bionic lens centre, as a fraction of servitor.webp
         let pulseTime = 0;
 
-        function drawServitorSkull() {
+        function drawServitorHud() {
+            // Match the canvas to its on-screen size so lines stay crisp and circles round.
+            if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+                canvas.width = canvas.clientWidth;
+                canvas.height = canvas.clientHeight;
+            }
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Get computed styling color
-            const style = getComputedStyle(document.body);
-            const mainColor = style.getPropertyValue('--main-color').trim() || '#ffb000';
-
-            const cx = canvas.width / 2;
-            const cy = canvas.height / 2 + 5;
-
+            const mainColor = getComputedStyle(document.body).getPropertyValue('--main-color').trim() || '#ffb000';
             pulseTime += brainBusy ? 0.15 : 0.05;
 
-            // Skull Outline (Gothic/Cybernetic hybrid)
+            // Where the eye actually is on screen, wherever the layout put the portrait.
+            const box = canvas.getBoundingClientRect(), pic = portrait.getBoundingClientRect();
+            const ex = pic.left - box.left + pic.width * EYE.x;
+            const ey = pic.top - box.top + pic.height * EYE.y;
+            const r = pic.width * 0.16 + Math.sin(pulseTime * 2) * 2;
+
             ctx.strokeStyle = mainColor;
             ctx.lineWidth = 1.5;
-            ctx.fillStyle = '#0a0804';
-
-            // Skull Cranium
+            ctx.setLineDash([3, 4]);
+            ctx.globalAlpha = 0.8;
             ctx.beginPath();
-            ctx.arc(cx, cy - 15, 38, Math.PI * 0.8, Math.PI * 0.2, false);
-            // Jawline & Cranium extension
-            ctx.lineTo(cx + 25, cy + 25);
-            ctx.lineTo(cx + 15, cy + 45); // Jaw
-            ctx.lineTo(cx - 15, cy + 45); // Teeth plate
-            ctx.lineTo(cx - 25, cy + 25);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Right Eye Cavity (Biological/Dark)
-            ctx.fillStyle = '#000000';
-            ctx.beginPath();
-            ctx.arc(cx - 15, cy - 15, 10, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            // Left Eye Cavity (CYBERNETIC BIONIC LENS)
-            ctx.beginPath();
-            ctx.arc(cx + 15, cy - 15, 12, 0, Math.PI * 2);
-            ctx.fillStyle = '#1f0000';
-            ctx.fill();
-            ctx.stroke();
-
-            // Bionic Lens Pupil Pulsing
-            const eyeGlow = Math.sin(pulseTime * 2) * 3 + 5;
-            ctx.fillStyle = '#ff3333';
-            ctx.beginPath();
-            ctx.arc(cx + 15, cy - 15, Math.max(2, eyeGlow - 2), 0, Math.PI * 2);
-            ctx.fill();
-
-            // Cybernetic Head Wire Plugs & Cranial Implants
-            ctx.beginPath();
-            // Left Cable
-            ctx.moveTo(cx - 35, cy - 25);
-            ctx.bezierCurveTo(cx - 60, cy - 30, cx - 70, cy, cx - 85, cy + 20);
-            // Right Cable
-            ctx.moveTo(cx + 35, cy - 25);
-            ctx.bezierCurveTo(cx + 60, cy - 30, cx + 70, cy, cx + 85, cy + 20);
-            // Top Cranial Socket
-            ctx.moveTo(cx, cy - 53);
-            ctx.lineTo(cx, cy - 70);
-            ctx.stroke();
-
-            // Grid / Target Reticle Overlay
-            ctx.setLineDash([2, 4]);
-            ctx.strokeStyle = mainColor;
-            ctx.globalAlpha = 0.3;
-            ctx.beginPath();
-            ctx.arc(cx, cy - 10, 60, 0, Math.PI * 2);
-            ctx.moveTo(cx - 70, cy - 10); ctx.lineTo(cx + 70, cy - 10);
-            ctx.moveTo(cx, cy - 80); ctx.lineTo(cx, cy + 60);
+            ctx.arc(ex, ey, r, 0, Math.PI * 2);
+            ctx.moveTo(ex - r - 25, ey); ctx.lineTo(ex - r + 6, ey);
+            ctx.moveTo(ex + r - 6, ey); ctx.lineTo(ex + r + 25, ey);
+            ctx.moveTo(ex, ey - r - 18); ctx.lineTo(ex, ey - r + 6);
             ctx.stroke();
             ctx.setLineDash([]);
             ctx.globalAlpha = 1.0;
 
-            // Simulated ECG / Neural Waves at bottom
+            // Simulated ECG / neural waves along the bottom
             ctx.beginPath();
-            ctx.lineWidth = 1;
             for (let x = 10; x < canvas.width - 10; x += 5) {
-                const y = canvas.height - 15 + Math.sin(x * 0.1 + pulseTime * 3) * (x % 20 === 0 ? 8 : 2);
+                const y = canvas.height - 12 + Math.sin(x * 0.1 + pulseTime * 3) * (x % 20 === 0 ? 8 : 2);
                 if (x === 10) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
             ctx.stroke();
 
-            requestAnimationFrame(drawServitorSkull);
+            requestAnimationFrame(drawServitorHud);
         }
 
         /* -------------------------------------------------------------------------- */
@@ -1037,6 +1030,7 @@ YOUR PERSONA & MANDATE:
 
         function setBusy(busy) {
             brainBusy = busy;
+            document.body.classList.toggle('brain-busy', busy);
             document.getElementById('halt-btn').classList.toggle('hidden', !busy);
             document.getElementById('model-select').disabled = busy;
             if (!busy) setSpiritState('SOOTHED', 'text-amber-400 font-bold');
@@ -1235,7 +1229,7 @@ Esc or [HALT] severs a transmission in progress.`;
         /* INITIALIZATION ON WINDOW LOAD                                              */
         /* -------------------------------------------------------------------------- */
         window.onload = function () {
-            requestAnimationFrame(drawServitorSkull);
+            requestAnimationFrame(drawServitorHud);
             updateTelemetry();
             renderVaultFiles();
             renderProcesses();

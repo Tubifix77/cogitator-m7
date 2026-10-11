@@ -55,6 +55,7 @@ The PURGE button in the threads tab is ceremonial: the console never kills real 
 ## Credits
 
 The original console design was generated with Google Gemini, then rebuilt for local models with Claude Code.
+The servitor portrait (`assets/servitor.webp`) is AI-generated artwork made by the project author.
 Fonts: VT323, Cinzel, Share Tech Mono (Google Fonts, SIL OFL). Icons: Font Awesome Free. Styling: Tailwind CSS.
 
 ## Disclaimer
