@@ -544,6 +544,20 @@
         const portrait = document.getElementById('servitor-portrait');
         const EYE = { x: 0.504, y: 0.523 }; // bionic lens centre, as a fraction of servitor.webp
         let pulseTime = 0;
+        let spin = 0;   // rotation of the outer arc segments
+        let lock = 0;   // 0 = idle scan, 1 = target locked (servo-brain working); eased between
+
+        // Every HUD line is drawn twice: a dark halo first, then the colour, so it reads over bright skin.
+        function hudPath(color, width, path, fill = false) {
+            ctx.lineWidth = width + 2.5;
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.beginPath(); path(); ctx.stroke();
+            ctx.lineWidth = width;
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.beginPath(); path();
+            fill ? ctx.fill() : ctx.stroke();
+        }
 
         function drawServitorHud() {
             // Match the canvas to its on-screen size so lines stay crisp and circles round.
@@ -559,22 +573,40 @@
             const box = canvas.getBoundingClientRect(), pic = portrait.getBoundingClientRect();
             const ex = pic.left - box.left + pic.width * EYE.x;
             const ey = pic.top - box.top + pic.height * EYE.y;
-            const r = pic.width * 0.16 + Math.sin(pulseTime * 2) * 2;
+            // Target-lock reticle: outer ring with rotating arcs, inner ring clear of the lens,
+            // four inward markers that breathe while idle and close in (red) while the servo-brain works.
+            lock += ((brainBusy ? 1 : 0) - lock) * 0.08;
+            spin += brainBusy ? 0.05 : 0.012;
+            const R = pic.width * 0.30;          // outer ring
+            const rIn = R * 0.52;                // inner ring, wide enough to leave the bionic eye visible
+            const markColor = lock > 0.5 ? '#ff4632' : mainColor;
 
-            ctx.strokeStyle = mainColor;
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([3, 4]);
-            ctx.globalAlpha = 0.8;
-            ctx.beginPath();
-            ctx.arc(ex, ey, r, 0, Math.PI * 2);
-            ctx.moveTo(ex - r - 25, ey); ctx.lineTo(ex - r + 6, ey);
-            ctx.moveTo(ex + r - 6, ey); ctx.lineTo(ex + r + 25, ey);
-            ctx.moveTo(ex, ey - r - 18); ctx.lineTo(ex, ey - r + 6);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            ctx.globalAlpha = 0.85;
+            hudPath(mainColor, 1, () => ctx.arc(ex, ey, R, 0, Math.PI * 2));
+            hudPath(mainColor, 1, () => ctx.arc(ex, ey, rIn, 0, Math.PI * 2));
+            for (const start of [spin, spin + Math.PI]) {
+                hudPath(mainColor, 3, () => ctx.arc(ex, ey, R + 3, start, start + Math.PI / 3));
+            }
+
+            const breathe = Math.sin(pulseTime * 2) * 3;
+            const mr = (rIn + R) / 2 + breathe * (1 - lock) - (R - rIn) * 0.35 * lock;  // marker radius
+            const s = Math.max(4, pic.width * 0.035);                                  // marker size
+            for (let k = 0; k < 4; k++) {
+                const a = Math.PI / 4 + k * Math.PI / 2;
+                const tx = ex + Math.cos(a) * mr, ty = ey + Math.sin(a) * mr;
+                const ux = -Math.cos(a), uy = -Math.sin(a);                            // points inward
+                hudPath(markColor, 1, () => {
+                    ctx.moveTo(tx + ux * s, ty + uy * s);
+                    ctx.lineTo(tx - ux * s * 0.6 - uy * s * 0.8, ty - uy * s * 0.6 + ux * s * 0.8);
+                    ctx.lineTo(tx - ux * s * 0.6 + uy * s * 0.8, ty - uy * s * 0.6 - ux * s * 0.8);
+                    ctx.closePath();
+                }, true);
+            }
             ctx.globalAlpha = 1.0;
 
             // Simulated ECG / neural waves along the bottom
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = mainColor;
             ctx.beginPath();
             for (let x = 10; x < canvas.width - 10; x += 5) {
                 const y = canvas.height - 12 + Math.sin(x * 0.1 + pulseTime * 3) * (x % 20 === 0 ? 8 : 2);
@@ -839,6 +871,8 @@ YOUR PERSONA & MANDATE:
 `;
 
         const HISTORY_LIMIT = 12; // messages (6 exchanges) kept as servitor memory
+        // num_predict caps a reply: without it a model stuck in a loop (e.g. endless binary cant) never stops.
+        const CHAT_OPTIONS = { num_ctx: 8192, num_predict: 1024 };
         let currentModel = null;
         let brainBusy = false;
         let haltController = null;
@@ -960,7 +994,8 @@ YOUR PERSONA & MANDATE:
             fetch(`${OLLAMA_URL}/api/generate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: name, keep_alive: '30m' })
+                // Same num_ctx as the chat calls: a different context size makes Ollama reload the model.
+                body: JSON.stringify({ model: name, keep_alive: '30m', options: { num_ctx: CHAT_OPTIONS.num_ctx } })
             }).catch(() => {}).finally(() => {
                 if (awakeningModel === name) awakeningModel = null;
                 pollServoBrain();
@@ -987,8 +1022,7 @@ YOUR PERSONA & MANDATE:
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     model: currentModel, messages, stream: true, think: false,
-                    // num_predict caps a reply: without it a model stuck in a loop (e.g. endless binary cant) never stops.
-                    keep_alive: '30m', options: { num_ctx: 8192, num_predict: 1024 }
+                    keep_alive: '30m', options: CHAT_OPTIONS
                 }),
                 signal: haltController.signal
             });
