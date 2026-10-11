@@ -16,8 +16,13 @@ Nothing leaves your computer; there is no cloud API.
 - **Servitor chat** with streaming replies, conversation memory, HALT (Esc) and a model picker.
 - **Live host augury.** Cerebral load = GPU, nutrient-gel = VRAM, cortex temperature = GPU temp.
   The servitor is given the live readings, so "report thy state" answers with real numbers.
+- **Mechanicus lore built in.** Local models know surprisingly little deep 40k lore (see the pilot below), so the
+  vault ships with 7 sourced Adeptus Mechanicus records: the Schism of Mars, the Treaty of Olympus, Ryza,
+  Legio Ignatum, Stygies VIII, Belisarius Cawl, and the Arks of Omen / *Archmagos* campaigns.
 - **Data-vaults.** Drop `.txt` / `.md` / `.log` files into `vaults/`; the servitor answers from them,
-  names the record, and says so when a record does not exist instead of inventing it.
+  names the record, and says so when a record does not exist instead of inventing it. The whole vault is
+  given to the model with each question, up to 12,000 characters (the shipped records use about 8,000);
+  files beyond that are listed as sealed rather than silently dropped.
 - **One-click start, sure shutdown.** `Cogitator.bat` starts everything and opens the browser. Closing the
   tab (or POWER DOWN) unloads the model from VRAM and stops the backend. Nothing lingers.
 - **Lore gap pilot** ([pilot/REPORT.md](pilot/REPORT.md)): a 12B local model got 1 of 41 Adeptus Mechanicus
