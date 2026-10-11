@@ -1,0 +1,10 @@
+# Local tool settings
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+
+# Superseded originals kept locally only
+cogitator.gemini-original.html
+locialization instruction.md

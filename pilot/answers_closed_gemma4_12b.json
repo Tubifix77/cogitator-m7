@@ -1,0 +1,330 @@
+[
+ {
+  "id": "S1",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "Who was Fabricator-General of Mars when the Horus Heresy began, and which side did he choose?",
+  "ref": "Kelbor-Hal; he sided with Horus and founded the Dark Mechanicum.",
+  "answer": "The Fabricator-General of Mars at the start of the Horus Heresy was **Perturabo** (who was the Warmaster of the Luna Wolves/Iron Warriors). However, the specific title of Fabricator-General of Mars was held by **Perturabo** during the Great Crusade, but he was not the ruler of Mars.\n\nIf you are referring to the ruler of the Forge World Mars specifically, the title was held by **Perturbo** (the name of the title) but the individual holding the office of Fabricator-General during the Heresy was **Perturabo** (who was the Warmaster). \n\n*Correction:* To be precise, **Perturabo** was the Warmaster. The specific individual holding the title of Fabricator-General of Mars during the Heresy is not a primary named character in the core lore, but the faction of the **Adeptus Mechanicus** (and the Forge World Mars) remained loyal to the **Emperor**."
+ },
+ {
+  "id": "S2",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "Which loyalist Tech-Priest was Forge Master of Mondus Occulam and Fabricator-Locum before the Horus Heresy?",
+  "ref": "Zagreus Kane.",
+  "answer": "The loyalist Tech-Priest was **Archmagos Dominus T.S. (T.S. is often omitted in general text, but he is commonly referred to as Archmagos Dominus)**."
+ },
+ {
+  "id": "S3",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "After the loyalists evacuated Mars during the Schism, what title was Zagreus Kane given, and how much real power did it carry?",
+  "ref": "Fabricator-General of Mars (in exile); he ruled in name only.",
+  "answer": "Zagreus Kane was given the title of **Lord of the Forge**.\n\nIn terms of real power, the title carried significant authority over the industrial and logistical infrastructure of Mars, but it was primarily a position of administrative and logistical command rather than a seat of supreme planetary governance or military command."
+ },
+ {
+  "id": "S4",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "Which Imperial Fists captain helped the loyalist Mechanicum, including Zagreus Kane, evacuate Mars?",
+  "ref": "Captain Sigismund.",
+  "answer": "Captain **Titus** (specifically Titus of the Imperial Fists)."
+ },
+ {
+  "id": "S5",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "Which loyalist Tech-Priest led the defence of Magma City during the Schism of Mars?",
+  "ref": "Koriel Zeth.",
+  "answer": "I don't know."
+ },
+ {
+  "id": "S6",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "Which Titan Legion and which Knight House fought to defend Magma City during the Schism of Mars?",
+  "ref": "Legio Tempestus and House Taranis (the oldest Knight House of Mars, almost wiped out).",
+  "answer": "The Titan Legion is the **Imperial Fists** (specifically the **Imperial Fists Titan Legion**) and the Knight House is **House Triptych**."
+ },
+ {
+  "id": "S7",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "Who was the master of the forge Mondus Gamma and a founding member of the Dark Mechanicum?",
+  "ref": "Lukas Chrom.",
+  "answer": "The master of the forge Mondus Gamma and a founding member of the Dark Mechanicum was **Archmagos Vulkanus** (not to be confused with the Primarch Vulkan)."
+ },
+ {
+  "id": "S8",
+  "topic": "Schism of Mars",
+  "era": "heresy",
+  "q": "What was the first target attacked by Lukas Chrom's Kaban Machine, opening the Schism of Mars?",
+  "ref": "Adept Ipluvien Maximal's reactor at Gigas Fossae.",
+  "answer": "The first target attacked by Lukas Chrom's Kaban Machine was the **Imperial Palace** (specifically the **Imperial Palace of Terra**)."
+ },
+ {
+  "id": "T1",
+  "topic": "Treaty of Mars",
+  "era": "great crusade",
+  "q": "By what name does the Adeptus Mechanicus know the treaty that bound Mars to the Emperor?",
+  "ref": "The Treaty of Olympus (Olympus Mons); elsewhere called the Treaty of Mars.",
+  "answer": "The Adeptus Mechanicus refers to this as the **Treaty of Mars**."
+ },
+ {
+  "id": "T2",
+  "topic": "Treaty of Mars",
+  "era": "great crusade",
+  "q": "What did the Emperor promise Mars under that treaty, and what did Mars provide in return?",
+  "ref": "Emperor: protection of Forge World sovereignty/autonomy, freedom to practise the Cult Mechanicus despite the Imperial Truth, and Navigator Houses. Mars: arms, a war fleet and its industrial capacity for the Great Crusade.",
+  "answer": "The Emperor promised Mars **sovereignty** (autonomy) and the right to remain a **technological powerhouse** (the seat of the Adeptus Mechanicus) in exchange for Mars providing the **logistical and technological infrastructure** to support the Great Crusade and the expansion of the Imperium."
+ },
+ {
+  "id": "T3",
+  "topic": "Treaty of Mars",
+  "era": "great crusade",
+  "q": "How many Navigator Houses did the Emperor pledge to Mars in the treaty?",
+  "ref": "Six.",
+  "answer": "The Emperor pledged **100** Navigator Houses to Mars in the treaty."
+ },
+ {
+  "id": "T4",
+  "topic": "Treaty of Mars",
+  "era": "great crusade",
+  "q": "Why did many Martian Tech-Priests come to regard the Emperor as the Omnissiah?",
+  "ref": "Because he could seemingly repair machinery instantly with a mere touch.",
+  "answer": "The Tech-Priests of Mars regarded the Emperor as the Omnissiah because of his unparalleled mastery over technology, his ability to manifest \"miracles\" through advanced science, and his role as the ultimate source of technological advancement during the Great Crusade. They viewed his mastery over the Machine Spirit as divine, leading them to conflate his mastery of the physical and technological realms with the worship of the Machine God."
+ },
+ {
+  "id": "R1",
+  "topic": "Ryza",
+  "era": "classic",
+  "q": "Which weapon technology is the Forge World Ryza famous for?",
+  "ref": "Plasma weapons (and plasma-armed vehicles).",
+  "answer": "The Forge World Ryza is famous for the production of **Bolters** and **Bolter ammunition**."
+ },
+ {
+  "id": "R2",
+  "topic": "Ryza",
+  "era": "classic",
+  "q": "What is the name and nickname of Ryza's Titan Legion?",
+  "ref": "Legio Crucius, the Warmongers.",
+  "answer": "The name of Ryza's Titan Legion is the **Imperial Titan Guard**, and they are commonly known by the nickname **The Iron Guard**."
+ },
+ {
+  "id": "R3",
+  "topic": "Ryza",
+  "era": "classic",
+  "q": "Name the two Ork Waaaghs that have attacked Ryza.",
+  "ref": "Waaagh! Grax and Waaagh! Rarguts.",
+  "answer": "The two Ork Waaaghs that have attacked Ryza are the **Waaagh! of the Beast** and the **Waaagh! of the Beast of the Beast**."
+ },
+ {
+  "id": "R4",
+  "topic": "Ryza",
+  "era": "heresy",
+  "q": "Roughly how much of Ryza's infrastructure was destroyed when the Dark Mechanicum besieged it during the Horus Heresy, and who won?",
+  "ref": "Over four-fifths destroyed; the loyalists won.",
+  "answer": "The Dark Mechanicum destroyed a significant portion of the Forge World's infrastructure during the siege, but the exact percentage is not specified in the lore. The **Adeptus Mechanicus** (specifically the loyalist forces of the Forge World) won the engagement."
+ },
+ {
+  "id": "R5",
+  "topic": "Ryza",
+  "era": "classic",
+  "q": "Besides the Leman Russ Executioner, which super-heavy tank is associated with Ryza's plasma production?",
+  "ref": "The Stormblade.",
+  "answer": "The **Baneblade** is the super-heavy tank associated with Ryza's plasma production."
+ },
+ {
+  "id": "I1",
+  "topic": "Legio Ignatum",
+  "era": "classic",
+  "q": "What is the nickname of the Legio Ignatum?",
+  "ref": "The Fire Wasps.",
+  "answer": "The nickname of the Legio Ignatum is the **\"Purifiers\"**."
+ },
+ {
+  "id": "I2",
+  "topic": "Legio Ignatum",
+  "era": "age of strife",
+  "q": "Which three Titan Legions formed the Triad Ferrum Morgulus, the original Legions founded in the Age of Strife?",
+  "ref": "Legio Ignatum, Legio Mortis and Legio Tempestus.",
+  "answer": "The three Titan Legions that formed the Triad Ferrum Morgulus are the **Ironix**, the **Morgul**, and the **Ferrum**."
+ },
+ {
+  "id": "I3",
+  "topic": "Legio Ignatum",
+  "era": "classic",
+  "q": "What is the Latin motto of the Legio Ignatum?",
+  "ref": "Inveniam viam aut faciam (I will find a way or make one).",
+  "answer": "The Latin motto of the Legio Ignatum is **\"Ignis et Ferrum\"** (Fire and Iron)."
+ },
+ {
+  "id": "I4",
+  "topic": "Legio Ignatum",
+  "era": "classic",
+  "q": "What are the heraldic colours of the Legio Ignatum?",
+  "ref": "Red, black and yellow.",
+  "answer": "The heraldic colours of the Legio Ignatum are **black and gold**."
+ },
+ {
+  "id": "I5",
+  "topic": "Legio Ignatum",
+  "era": "heresy",
+  "q": "Which Legio Ignatum Emperor Titan, commanded by Princeps Maximus Cydon, fought at the Siege of Terra, and which Titan destroyed it?",
+  "ref": "Imperious Prima; destroyed by the Legio Mortis Imperator Titan Dies Irae.",
+  "answer": "The Emperor Titan was the **Imperator**, and it was destroyed by the **War-Titan** (specifically, it was destroyed by a **War-Titan** during the Siege of Terra)."
+ },
+ {
+  "id": "I6",
+  "topic": "Legio Ignatum",
+  "era": "classic",
+  "q": "In which conflict was the Titan Imperious Prima finally destroyed after being recovered, and by whom?",
+  "ref": "The Third War for Armageddon, by Orks.",
+  "answer": "The Titan *Imperious Prima* was destroyed during the **Siege of Vraks** by the **Imperial Guard** (specifically the **Imperial Guard of the Vraks Sector**)."
+ },
+ {
+  "id": "I7",
+  "topic": "Legio Ignatum",
+  "era": "classic",
+  "q": "Two Warhound Titans of the Legio Ignatum have the honour of guarding which gate of the Imperial Palace?",
+  "ref": "The Eternity Gate.",
+  "answer": "The two Warhound Titans of the Legio Ignatum guard the **Gate of the Emperor** (also known as the **Imperial Gate**)."
+ },
+ {
+  "id": "G1",
+  "topic": "Stygies VIII",
+  "era": "classic",
+  "q": "Which secret Mechanicus sect, devoted to studying xenos technology, is based on Stygies VIII?",
+  "ref": "The Xenarites.",
+  "answer": "The **Adeptus Mechanicus** sect is the **Adeptus Mechanicus** (specifically the **Tech-Priests of Mars**), but the specific sub-sect or group associated with the study of xenos technology on Stygies VIII is the **Dark Mechanicum** (though they are heretical) or, more accurately in lore, the **Adeptus Mechanicus** (specifically those involved in the **Stygies VIII** excavations).\n\nHowever, if you are referring to the specific clandestine group often associated with the \"forbidden\" study of xenos tech in that region, it is the **Adeptus Mechanicus**."
+ },
+ {
+  "id": "G2",
+  "topic": "Stygies VIII",
+  "era": "heresy",
+  "q": "Who saved Stygies VIII from falling to the rebels during the Horus Heresy?",
+  "ref": "Eldar (Aeldari) forces intervened.",
+  "answer": "The **Ultramarines** (specifically the Chapter under the command of **Marneus Calgar**) saved Stygies VIII from falling to the rebels."
+ },
+ {
+  "id": "G3",
+  "topic": "Stygies VIII",
+  "era": "heresy",
+  "q": "Name Stygies VIII's two Horus Heresy-era Titan Legions, with nicknames, and the side they took.",
+  "ref": "Legio Vulcanum I 'Dark Fire' and Legio Vulcanum II 'Lords of Ruin'; both turned traitor and sided with Horus.",
+  "answer": "Stygies VIII's two Titan Legions were:\n\n1. **The Iron Guard** (nicknamed \"The Iron Guard\") – Loyalist\n2. **The Void Stalkers** (nicknamed \"The Void Stalkers\") – Traitor"
+ },
+ {
+  "id": "G4",
+  "topic": "Stygies VIII",
+  "era": "classic",
+  "q": "Stygies VIII is one of the few forge worlds that produces which Leman Russ variant?",
+  "ref": "The Leman Russ Vanquisher.",
+  "answer": "Stygies VIII produces the **Leman Russ Battleline** variant."
+ },
+ {
+  "id": "G5",
+  "topic": "Stygies VIII",
+  "era": "classic",
+  "q": "In M36, which Imperial force launched a devastating assault on Stygies VIII because of its xenos-tech practices?",
+  "ref": "A dozen Deathwatch Kill-Teams (Ordo Xenos).",
+  "answer": "The **Space Marines** (specifically the **Space Marines** and their associated Imperial forces) launched the assault on Stygies VIII."
+ },
+ {
+  "id": "C1",
+  "topic": "Belisarius Cawl",
+  "era": "8th+",
+  "q": "What is Belisarius Cawl's rank in the Adeptus Mechanicus, and what honorific title is he known by?",
+  "ref": "Archmagos Dominus; known as the Master of Masters.",
+  "answer": "Belisarius Cawl holds the rank of **Archmagos** and is known by the honorific title **Archmagos Cawl**."
+ },
+ {
+  "id": "C2",
+  "topic": "Belisarius Cawl",
+  "era": "8th+",
+  "q": "Approximately how old is Belisarius Cawl?",
+  "ref": "Over ten thousand years old.",
+  "answer": "Belisarius Cawl is approximately **10,000 years old**."
+ },
+ {
+  "id": "C3",
+  "topic": "Belisarius Cawl",
+  "era": "8th+",
+  "q": "Who charged Belisarius Cawl with creating the Primaris Space Marines?",
+  "ref": "Roboute Guilliman (after the Horus Heresy, to be carried out should the Primarch fall).",
+  "answer": "The creation of the Primaris Space Marines was authorized by the **High Lords of Terra**."
+ },
+ {
+  "id": "C4",
+  "topic": "Belisarius Cawl",
+  "era": "8th+",
+  "q": "How many times, at least, has Belisarius Cawl's memory been wiped?",
+  "ref": "At least twice.",
+  "answer": "Belisarius Cawl's memory has been wiped at least **two** times.\n\nThe first occurred during the **Horus Heresy** (specifically during the Siege of Terra) to remove knowledge of the Emperor's true nature and the secrets of the Golden Throne. The second occurred during the **Indomitus Crusade** era (specifically in the novel *The Gatekeepers*), where his memories were purged again to ensure he could not access certain forbidden technologies or secrets."
+ },
+ {
+  "id": "C5",
+  "topic": "Belisarius Cawl",
+  "era": "8th+",
+  "q": "What is the name of the separate copy or lesser version of himself that Cawl created?",
+  "ref": "The Cawl Inferior.",
+  "answer": "The name of the separate copy or lesser version of himself that Belisarius Cawl created is **Cawl-Prime**."
+ },
+ {
+  "id": "N1",
+  "topic": "Recent lore",
+  "era": "2023",
+  "q": "Who is Vashtorr the Arkifane, and what is his ultimate ambition?",
+  "ref": "A daemonic forge-master / daemon of invention who allied with Abaddon; he seeks to ascend as a fifth Chaos God.",
+  "answer": "Vashtorr the Arkifane is a powerful and ancient entity of the Warp, often classified as a \"warp-entity\" or \"warp-spirit\" that manifests as a master of machines and technology. He is associated with the corruption of technology and the creation of \"warp-tech.\"\n\nHis ultimate ambition is to forge a physical body and a permanent foothold in the material universe by consuming and corrupting the technology of the mortal realms, ultimately seeking to become a god of the machine."
+ },
+ {
+  "id": "N2",
+  "topic": "Recent lore",
+  "era": "2023",
+  "q": "In the Arks of Omen campaign, what were Abaddon and Vashtorr searching for?",
+  "ref": "Fragments of 'the Key' (the Key to the Lock), which together unlock 'the Weapon'.",
+  "answer": "Abaddon and Vashtorr were searching for the **Arks of Omens**, which are powerful artifacts of the Warp that are said to be capable of opening a permanent gateway to the Warp or reshaping reality."
+ },
+ {
+  "id": "N3",
+  "topic": "Recent lore",
+  "era": "2023",
+  "q": "During Vashtorr's assault on the Rock, which daemon prince appeared and duelled him?",
+  "ref": "Be'lakor.",
+  "answer": "The daemon prince who appeared and duelled Vashtorr the Arkifane during the assault on the Rock was **Sanguinius**."
+ },
+ {
+  "id": "N4",
+  "topic": "Recent lore",
+  "era": "2023",
+  "q": "What ancient warp device did Vashtorr take from the Rock at the end of Arks of Omen, and where did he take it?",
+  "ref": "The Tuchulcha Engine; to his sanctum on Wyrmwood.",
+  "answer": "Vashtorr the Ark_hunter took the **Gate of Eternity** and took it to the **Eye of Terror**."
+ },
+ {
+  "id": "N5",
+  "topic": "Recent lore",
+  "era": "2025",
+  "q": "In the 2025 Black Library novel 'Archmagos', what is Belisarius Cawl trying to stabilise, on whose orders, and why?",
+  "ref": "The Attilan Gap, on Roboute Guilliman's orders, to open a stable route across the Great Rift into Imperium Nihilus.",
+  "answer": "In the novel *Archmagos*, Belisarius Cawl is attempting to stabilize a **warp-tainted, experimental warp-engine** (specifically a prototype warp-gate/engine system) on the orders of **Roboute Guilliman**. He is doing so to provide a stable method of travel or power that bypasses the dangers of the Warp, aiming to secure the Imperium's logistics and safety."
+ },
+ {
+  "id": "N6",
+  "topic": "Recent lore",
+  "era": "2025",
+  "q": "In 'Archmagos', where are the control codes that Cawl needs kept?",
+  "ref": "On an ancient Necron world on the event horizon of a black hole.",
+  "answer": "In the novel *Archmagos* by Aaron Dembski-Evans, the control codes are kept in a **vault** (specifically a high-security data vault) within the **Forge World of Mars**."
+ },
+ {
+  "id": "N7",
+  "topic": "Recent lore",
+  "era": "2022+",
+  "q": "Who wrote the Belisarius Cawl novels, and whom does Cawl match wits with in 'Genefather'?",
+  "ref": "Guy Haley; Fabius Bile.",
+  "answer": "The Belisarius Cawl novels (specifically *The Master of Machinery* and *The Forge World*) were written by **Aaron Dembski-Polish**.\n\nIn the novel *Genefather*, Belisarius Cawl matches wits with **the Emperor of Mankind**."
+ }
+]

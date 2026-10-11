@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADEPTUS MECHANICUS - COGITATOR M-VII SERVITOR CONSOLE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Gothic/Terminal Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Cinzel:wght@600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --crt-amber: #ffb000;
+            --crt-amber-dim: #996a00;
+            --crt-amber-glow: rgba(255, 176, 0, 0.35);
+            --crt-green: #33ff33;
+            --crt-green-glow: rgba(51, 255, 51, 0.35);
+            --crt-red: #ff3333;
+            --crt-bg: #0d0a05;
+            --crt-panel: #161108;
+            --main-color: var(--crt-amber);
+            --glow-color: var(--crt-amber-glow);
+        }
+
+        body.theme-green {
+            --main-color: var(--crt-green);
+            --glow-color: var(--crt-green-glow);
+            --crt-bg: #050d05;
+            --crt-panel: #081608;
+        }
+
+        body {
+            background-color: var(--crt-bg);
+            color: var(--main-color);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            text-shadow: 0 0 4px var(--glow-color);
+        }
+
+        .font-gothic {
+            font-family: 'Cinzel', serif;
+        }
+
+        .font-crt {
+            font-family: 'VT323', monospace;
+        }
+
+        /* CRT Scanline & Glass Effects */
+        .crt-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.35) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.03),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 0, 255, 0.03)
+            );
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+            opacity: 0.98;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        .crt-vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.95), inset 0 0 40px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            z-index: 101;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--crt-panel);
+            border: 1px solid var(--main-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            box-shadow: 0 0 5px var(--main-color);
+        }
+
+        /* Borders & Paneling */
+        .mechanicus-border {
+            border: 2px solid var(--main-color);
+            box-shadow: 0 0 8px var(--glow-color), inset 0 0 8px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .mechanicus-border::before {
+            content: '⚙';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--crt-bg);
+            color: var(--main-color);
+            padding: 0 4px;
+            font-size: 12px;
+        }
+
+        .mechanicus-border::after {
+            content: '⚙';
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            background: var(--crt-bg);
+            color: var(--main-color);
+            padding: 0 4px;
+            font-size: 12px;
+        }
+
+        /* Scanline line moving down */
+        .scanline-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes scanline {
+            0% { top: -10px; }
+            100% { top: 100%; }
+        }
+
+        .glow-text {
+            text-shadow: 0 0 6px var(--main-color);
+        }
+
+        .blink {
+            animation: blinker 1s step-start infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="crt-flicker flex flex-col h-screen w-screen p-2 sm:p-4 select-none">
+
+    <div class="crt-overlay"></div>
+    <div class="crt-vignette"></div>
+
+    <!-- MAIN COGITATOR FRAME -->
+    <div class="mechanicus-border bg-[#0d0a05] h-full flex flex-col p-2 sm:p-3 relative overflow-hidden">
+        <div class="scanline-bar"></div>
+
+        <!-- HEADER / ARCHIVAL TITLE -->
+        <header class="flex flex-wrap justify-between items-center border-b-2 border-[var(--main-color)] pb-2 mb-2 gap-2">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-gear fa-spin text-2xl sm:text-3xl text-[var(--main-color)]"></i>
+                <div>
+                    <h1 class="font-gothic text-lg sm:text-2xl font-black tracking-widest leading-none glow-text">
+                        ADEPTUS MECHANICUS // COGITATOR M-VII
+                    </h1>
+                    <p class="text-xs tracking-wider opacity-80">
+                        FORGE WORLD MARS // SERVITOR WETWARE UNIT SERIAL: <span id="servitor-sn">M7-884-THX</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Status Badges & Controls -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs">
+                <div class="hidden md:flex flex-col text-right border-r border-[var(--main-color)] pr-3">
+                    <span>LITANY OF IGNITION: <span class="text-emerald-400 font-bold">SANCTIFIED</span></span>
+                    <span>MACHINE SPIRIT: <span class="text-amber-400 font-bold" id="spirit-state">SOOTHED</span></span>
+                </div>
+
+                <!-- Servo-Brain (local Ollama model) selector -->
+                <label class="flex items-center gap-1" title="Local Ollama model wired into the servitor">
+                    <i class="fa-solid fa-microchip"></i>
+                    <select id="model-select" onchange="selectModel(this.value)" class="bg-black border border-[var(--main-color)] text-[var(--main-color)] px-1 py-1 text-xs max-w-[11rem] focus:outline-none">
+                        <option>AUGURING...</option>
+                    </select>
+                </label>
+
+                <!-- Audio Toggle -->
+                <button id="audio-toggle" onclick="toggleAudio()" class="px-2 py-1 border border-[var(--main-color)] hover:bg-[var(--main-color)] hover:text-black transition">
+                    <i class="fa-solid fa-volume-high mr-1"></i> <span id="audio-status">AUDIO: ON</span>
+                </button>
+
+                <!-- Color Scheme Toggle -->
+                <button onclick="toggleTheme()" class="px-2 py-1 border border-[var(--main-color)] hover:bg-[var(--main-color)] hover:text-black transition">
+                    <i class="fa-solid fa-palette mr-1"></i> COLOR
+                </button>
+
+                <!-- Reboot Button -->
+                <button onclick="triggerBootSequence()" class="px-2 py-1 border border-red-500 text-red-400 hover:bg-red-500 hover:text-black transition">
+                    <i class="fa-solid fa-rotate mr-1"></i> RE-IGNITE
+                </button>
+
+                <!-- Power Down: unloads the model from VRAM and stops the backend -->
+                <button onclick="powerDown()" title="Unload the servo-brain from VRAM and shut the cogitator down" class="px-2 py-1 border border-red-500 bg-red-900/40 text-red-300 hover:bg-red-500 hover:text-black transition">
+                    <i class="fa-solid fa-power-off mr-1"></i> POWER DOWN
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT GRID (LEFT: SERVITOR TELEMETRY & TOOLS, RIGHT: DATA-SLATE TERMINAL) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 flex-grow overflow-hidden min-h-0">
+            
+            <!-- LEFT COLUMN: SERVITOR WETWARE MONITOR & UTILITIES (4 cols) -->
+            <div class="lg:col-span-4 flex flex-col gap-3 h-full overflow-y-auto pr-1">
+                
+                <!-- SERVITOR VISUAL & BIOMETRIC UNIT -->
+                <div class="mechanicus-border p-2 bg-[var(--crt-panel)] flex flex-col">
+                    <div class="flex justify-between items-center text-xs font-bold border-b border-[var(--main-color)] pb-1 mb-2">
+                        <span><i class="fa-solid fa-brain mr-1"></i> SERVITOR WETWARE MATRIX</span>
+                        <span class="text-emerald-400 blink">● ACTIVE</span>
+                    </div>
+
+                    <!-- Canvas for Servitor Animated Cyber-Skull -->
+                    <div class="relative w-full h-44 bg-black/60 border border-[var(--main-color)] flex items-center justify-center overflow-hidden mb-2">
+                        <canvas id="servitorCanvas" width="320" height="170" class="w-full h-full"></canvas>
+                        
+                        <!-- Overlay telemetry HUD -->
+                        <div class="absolute top-1 left-1 text-[10px] opacity-75 leading-tight pointer-events-none">
+                            <div title="Generation speed of the last servo-brain reply">NEURAL: <span id="neural-hz">-- tok/s</span></div>
+                            <div>LOBOTOMY: TOTAL</div>
+                            <div>SENSOR LINK: <span id="sensor-link">PENDING</span></div>
+                        </div>
+                        <div class="absolute bottom-1 right-1 text-[10px] opacity-75 leading-tight text-right pointer-events-none">
+                            <div>CEREBRAL FLUID: OPTIMAL</div>
+                            <div>OXYGENATED BLOOD: 98%</div>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Gauges -->
+                    <div class="space-y-1.5 text-xs">
+                        <div title="GPU utilisation">
+                            <div class="flex justify-between">
+                                <span>CEREBRAL LOAD <span class="opacity-50">[GPU]</span>:</span>
+                                <span id="load-val">--</span>
+                            </div>
+                            <div class="w-full bg-black/80 border border-[var(--main-color)] h-2.5 p-0.5">
+                                <div id="load-bar" class="bg-[var(--main-color)] h-full transition-all duration-300" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div title="GPU memory in use">
+                            <div class="flex justify-between">
+                                <span>NUTRIENT-GEL SATURATION <span class="opacity-50">[VRAM]</span>:</span>
+                                <span id="gel-val">--</span>
+                            </div>
+                            <div class="w-full bg-black/80 border border-[var(--main-color)] h-2.5 p-0.5">
+                                <div id="gel-bar" class="bg-[var(--main-color)] h-full transition-all duration-300" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div title="GPU core temperature">
+                            <div class="flex justify-between">
+                                <span>CORTEX TEMPERATURE <span class="opacity-50">[GPU]</span>:</span>
+                                <span id="temp-val">--</span>
+                            </div>
+                            <div class="w-full bg-black/80 border border-[var(--main-color)] h-2.5 p-0.5">
+                                <div id="temp-bar" class="bg-[var(--main-color)] h-full transition-all duration-300" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div title="CPU utilisation">
+                            <div class="flex justify-between">
+                                <span>LOGIC ENGINE STRAIN <span class="opacity-50">[CPU]</span>:</span>
+                                <span id="cpu-val">--</span>
+                            </div>
+                            <div class="w-full bg-black/80 border border-[var(--main-color)] h-2.5 p-0.5">
+                                <div id="cpu-bar" class="bg-[var(--main-color)] h-full transition-all duration-300" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COGITATOR TOOLS & UTILITIES NAVIGATION -->
+                <div class="mechanicus-border p-2 bg-[var(--crt-panel)] flex-grow flex flex-col min-h-[220px]">
+                    <!-- Tool Selector Tabs -->
+                    <div class="grid grid-cols-3 gap-1 text-center text-xs mb-2">
+                        <button onclick="switchTab('telemetry')" id="tab-telemetry" class="py-1 border border-[var(--main-color)] bg-[var(--main-color)] text-black font-bold">SYSTEM</button>
+                        <button onclick="switchTab('vaults')" id="tab-vaults" class="py-1 border border-[var(--main-color)] hover:bg-[var(--main-color)] hover:text-black">VAULTS</button>
+                        <button onclick="switchTab('purger')" id="tab-purger" class="py-1 border border-[var(--main-color)] hover:bg-[var(--main-color)] hover:text-black">PURGER</button>
+                    </div>
+
+                    <!-- TAB 1: SYSTEM TELEMETRY -->
+                    <div id="view-telemetry" class="space-y-2 text-xs overflow-y-auto flex-grow">
+                        <div class="p-1.5 border border-dashed border-[var(--main-color)] bg-black/30">
+                            <div class="font-bold border-b border-[var(--main-color)] pb-0.5 mb-1">STC DATA VAULT STORAGE</div>
+                            <div id="disk-list"><div class="opacity-60">Auguring storage sectors...</div></div>
+                            <div class="flex justify-between"><span>MEMORY CORE [RAM]:</span><span id="ram-val">--</span></div>
+                        </div>
+
+                        <div class="p-1.5 border border-dashed border-[var(--main-color)] bg-black/30">
+                            <div class="font-bold border-b border-[var(--main-color)] pb-0.5 mb-1">MACHINE SPIRIT DIAGNOSTICS</div>
+                            <div class="flex justify-between"><span>Cogitator Engine:</span><span id="gpu-name">--</span></div>
+                            <div class="flex justify-between"><span>Servo-Brain Link [Ollama]:</span><span id="ollama-state">--</span></div>
+                            <div class="flex justify-between gap-2"><span>Installed Servo-Brain:</span><span id="brain-loaded" class="text-right">--</span></div>
+                            <div class="flex justify-between"><span>Wetware Placement:</span><span id="brain-placement">--</span></div>
+                            <div class="flex justify-between"><span>Cognitive Inhibitor:</span><span>ENGAGED (100%)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: DATA VAULTS (ASCII FILE BROWSER) -->
+                    <div id="view-vaults" class="hidden space-y-2 text-xs overflow-y-auto flex-grow">
+                        <div class="font-bold text-center border-b border-[var(--main-color)] pb-1">/STC_ARCHIVES/SACRED_LOGS/</div>
+                        <div id="archive-status" class="text-center text-[10px] opacity-70">AUGURING ARCHIVE...</div>
+                        <ul class="space-y-1" id="file-list">
+                            <!-- Files inserted dynamically -->
+                        </ul>
+                    </div>
+
+                    <!-- TAB 3: THREAD/PROCESS PURGER -->
+                    <div id="view-purger" class="hidden space-y-2 text-xs overflow-y-auto flex-grow">
+                        <div class="font-bold border-b border-[var(--main-color)] pb-1 mb-1 flex justify-between"><span>RUNNING COGITATOR THREADS</span><span class="opacity-60 font-normal">TOP 8 BY MEMORY</span></div>
+                        <div class="space-y-1.5" id="process-list">
+                            <!-- Processes populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: DATA-SLATE CONSOLE & LLM SERVO-BRAIN INTERACTION (8 cols) -->
+            <div class="lg:col-span-8 flex flex-col h-full mechanicus-border bg-[var(--crt-panel)] p-2 sm:p-3 overflow-hidden">
+                
+                <!-- Terminal Header Bar -->
+                <div class="flex justify-between items-center text-xs border-b border-[var(--main-color)] pb-1.5 mb-2">
+                    <span class="font-bold"><i class="fa-solid fa-terminal mr-1"></i> SACRED DATA-SLATE CONSOLE v7.41</span>
+                    <div class="flex gap-2 text-[11px]">
+                        <button id="halt-btn" onclick="haltServoBrain()" class="hidden text-red-400 hover:underline" title="Abort the reply in progress (Esc)">[HALT]</button>
+                        <button onclick="clearTerminal()" class="hover:underline">[CLEAR LOGS]</button>
+                        <button onclick="insertCommand('FORGET')" class="hover:underline" title="Wipe the servitor's conversation memory">[FORGET]</button>
+                        <button onclick="insertCommand('INIT_LITANY')" class="hover:underline">[LITANY]</button>
+                        <button onclick="insertCommand('INSPECT_WETWARE')" class="hover:underline">[INSPECT]</button>
+                    </div>
+                </div>
+
+                <!-- Terminal Output Display Box -->
+                <div id="terminal-output" class="flex-grow overflow-y-auto space-y-3 pr-2 text-xs sm:text-sm font-mono scroll-smooth">
+                    <!-- Logs & LLM responses render here -->
+                </div>
+
+                <!-- QUICK PRESET LITANIES / COMMAND BUTTONS -->
+                <div class="py-1.5 flex flex-wrap gap-1 border-t border-[var(--main-color)] mt-2">
+                    <span class="text-[10px] self-center mr-1 font-bold">RITES:</span>
+                    <button onclick="executePreset('QUERY_SERVO_BRAIN What is thy purpose, servitor?')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">Purpose Query</button>
+                    <button onclick="executePreset('INIT_LITANY')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">Litany of Ignition</button>
+                    <button onclick="executePreset('INSPECT_WETWARE')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">Wetware Diagnostic</button>
+                    <button onclick="executePreset('PURGE_HERESY')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">Purge Heresy</button>
+                    <button onclick="executePreset('QUERY_SERVO_BRAIN Recite the Litany against Abominable Intelligence')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">Anti-AI Chant</button>
+                    <button onclick="executePreset('QUERY_SERVO_BRAIN Report thy true state, servitor. Is the cogitator sound?')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">State Report</button>
+                    <button onclick="executePreset('HELP')" class="text-[11px] px-1.5 py-0.5 border border-[var(--main-color)]/60 hover:bg-[var(--main-color)] hover:text-black">Rites Index</button>
+                </div>
+
+                <!-- INPUT PUNCH CARD ENTRY TERMINAL -->
+                <form id="terminal-form" onsubmit="handleCommandSubmit(event)" class="flex items-center gap-2 mt-1 pt-1 border-t-2 border-[var(--main-color)]">
+                    <span class="font-bold text-sm glow-text">►</span>
+                    <input type="text" id="terminal-input" autocomplete="off" placeholder="Type Mechanicus Rite or QUERY_SERVO_BRAIN <prompt>..." 
+                        class="flex-grow bg-black/60 border border-[var(--main-color)] px-2 py-1.5 text-xs sm:text-sm text-[var(--main-color)] focus:outline-none focus:ring-1 focus:ring-[var(--main-color)] font-mono">
+                    <button type="submit" class="px-3 py-1.5 border border-[var(--main-color)] bg-[var(--main-color)] text-black font-bold text-xs hover:bg-opacity-80 transition">
+                        TRANSMIT
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER STATUS BAR -->
+        <footer class="mt-2 pt-1 border-t border-[var(--main-color)] flex justify-between items-center text-[10px] sm:text-xs">
+            <span>THERE IS NO TRUTH IN FLESH, ONLY IN STEEL.</span>
+            <span class="hidden sm:inline">NO WEAKNESS IN THE MACHINE SPIRIT.</span>
+            <span class="text-amber-400 font-bold">OMNISSIAH BE PRAISED</span>
+        </footer>
+
+    </div>
+
+    <!-- POWERED-DOWN SCREEN (backend gone or POWER DOWN rite performed) -->
+    <div id="powerdown-overlay" class="fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-[200] hidden">
+        <div class="mechanicus-border bg-[var(--crt-panel)] max-w-lg w-full p-6 text-center space-y-3">
+            <i class="fa-solid fa-power-off text-4xl text-red-400"></i>
+            <div class="font-gothic text-xl font-black tracking-widest glow-text">COGITATOR POWERED DOWN</div>
+            <div id="powerdown-reason" class="text-xs opacity-80"></div>
+            <div class="text-xs">The Machine Spirit rests. Servo-brain released from VRAM.<br>You may close this tab. To re-ignite, run <span class="font-bold">Cogitator.bat</span> again.</div>
+            <button onclick="location.reload()" class="text-xs px-3 py-1 border border-[var(--main-color)] hover:bg-[var(--main-color)] hover:text-black">[ RETRY LINK ]</button>
+        </div>
+    </div>
+
+    <!-- MODAL FOR FILE CONTENT VIEWING -->
+    <div id="file-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
+        <div class="mechanicus-border bg-[var(--crt-panel)] max-w-xl w-full p-4 space-y-3">
+            <div class="flex justify-between items-center border-b border-[var(--main-color)] pb-1">
+                <span id="modal-title" class="font-bold text-sm">FILE_VIEWER.DAT</span>
+                <button onclick="closeModal()" class="text-xs px-2 py-0.5 border border-red-500 text-red-400 hover:bg-red-500 hover:text-black">[CLOSE]</button>
+            </div>
+            <pre id="modal-content" class="text-xs font-mono whitespace-pre-wrap max-h-80 overflow-y-auto p-2 bg-black/60 border border-[var(--main-color)]/40"></pre>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* -------------------------------------------------------------------------- */
+        /* AUDIO SYNTHESIZER ENGINE (Web Audio API - No external files needed)        */
+        /* -------------------------------------------------------------------------- */
+        let audioCtx = null;
+        let audioEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!audioEnabled || document.hidden) return; // no chirping from a background tab
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.03);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+                    osc.start(now);
+                    osc.stop(now + 0.03);
+                } else if (type === 'cant') {
+                    // Binary cant chatter effect
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300 + Math.random() * 600, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+                } else if (type === 'hum') {
+                    // Cybernetic servo buzz
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.linearRampToValueAtTime(60, now + 0.2);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }
+            } catch (e) {
+                // Audio context block handling
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('audio-status').innerText = audioEnabled ? 'AUDIO: ON' : 'AUDIO: OFF';
+            if (audioEnabled) playSound('click');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('theme-green');
+            playSound('click');
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* SERVITOR CYBERNETIC SKULL CANVAS RENDERING                                 */
+        /* -------------------------------------------------------------------------- */
+        const canvas = document.getElementById('servitorCanvas');
+        const ctx = canvas.getContext('2d');
+        let pulseTime = 0;
+
+        function drawServitorSkull() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Get computed styling color
+            const style = getComputedStyle(document.body);
+            const mainColor = style.getPropertyValue('--main-color').trim() || '#ffb000';
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2 + 5;
+
+            pulseTime += brainBusy ? 0.15 : 0.05;
+
+            // Skull Outline (Gothic/Cybernetic hybrid)
+            ctx.strokeStyle = mainColor;
+            ctx.lineWidth = 1.5;
+            ctx.fillStyle = '#0a0804';
+
+            // Skull Cranium
+            ctx.beginPath();
+            ctx.arc(cx, cy - 15, 38, Math.PI * 0.8, Math.PI * 0.2, false);
+            // Jawline & Cranium extension
+            ctx.lineTo(cx + 25, cy + 25);
+            ctx.lineTo(cx + 15, cy + 45); // Jaw
+            ctx.lineTo(cx - 15, cy + 45); // Teeth plate
+            ctx.lineTo(cx - 25, cy + 25);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Right Eye Cavity (Biological/Dark)
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(cx - 15, cy - 15, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Left Eye Cavity (CYBERNETIC BIONIC LENS)
+            ctx.beginPath();
+            ctx.arc(cx + 15, cy - 15, 12, 0, Math.PI * 2);
+            ctx.fillStyle = '#1f0000';
+            ctx.fill();
+            ctx.stroke();
+
+            // Bionic Lens Pupil Pulsing
+            const eyeGlow = Math.sin(pulseTime * 2) * 3 + 5;
+            ctx.fillStyle = '#ff3333';
+            ctx.beginPath();
+            ctx.arc(cx + 15, cy - 15, Math.max(2, eyeGlow - 2), 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cybernetic Head Wire Plugs & Cranial Implants
+            ctx.beginPath();
+            // Left Cable
+            ctx.moveTo(cx - 35, cy - 25);
+            ctx.bezierCurveTo(cx - 60, cy - 30, cx - 70, cy, cx - 85, cy + 20);
+            // Right Cable
+            ctx.moveTo(cx + 35, cy - 25);
+            ctx.bezierCurveTo(cx + 60, cy - 30, cx + 70, cy, cx + 85, cy + 20);
+            // Top Cranial Socket
+            ctx.moveTo(cx, cy - 53);
+            ctx.lineTo(cx, cy - 70);
+            ctx.stroke();
+
+            // Grid / Target Reticle Overlay
+            ctx.setLineDash([2, 4]);
+            ctx.strokeStyle = mainColor;
+            ctx.globalAlpha = 0.3;
+            ctx.beginPath();
+            ctx.arc(cx, cy - 10, 60, 0, Math.PI * 2);
+            ctx.moveTo(cx - 70, cy - 10); ctx.lineTo(cx + 70, cy - 10);
+            ctx.moveTo(cx, cy - 80); ctx.lineTo(cx, cy + 60);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.globalAlpha = 1.0;
+
+            // Simulated ECG / Neural Waves at bottom
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            for (let x = 10; x < canvas.width - 10; x += 5) {
+                const y = canvas.height - 15 + Math.sin(x * 0.1 + pulseTime * 3) * (x % 20 === 0 ? 8 : 2);
+                if (x === 10) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            requestAnimationFrame(drawServitorSkull);
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* REAL-TIME TELEMETRY (from server.py host bridge + Ollama)                  */
+        /* -------------------------------------------------------------------------- */
+        const OLLAMA_URL = 'http://localhost:11434';
+        let lastTelemetry = null;   // also fed to the servitor as context
+        let lastBrainStatus = null; // what Ollama has loaded right now
+        let awakeningModel = null;  // model we asked Ollama to load that it hasn't listed yet
+
+        const GB = 2 ** 30;
+        const fmtGB = bytes => (bytes / GB).toFixed(1) + ' GB';
+
+        function setGauge(id, pct, label) {
+            document.getElementById(`${id}-val`).innerText = label;
+            document.getElementById(`${id}-bar`).style.width = Math.max(0, Math.min(100, pct)) + '%';
+        }
+
+        function setSensorLink(ok) {
+            const el = document.getElementById('sensor-link');
+            el.innerText = ok ? 'LIVE' : 'SEVERED';
+            el.className = ok ? 'text-emerald-400' : 'text-red-400';
+        }
+
+        // Each open console identifies itself so the backend knows when the last one is gone.
+        const CLIENT_ID = (crypto.randomUUID && crypto.randomUUID()) || String(Math.random()).slice(2);
+        let telemetryFailures = 0;
+
+        // Polling doubles as the heartbeat that keeps the backend alive.
+        async function pollTelemetry() {
+            try {
+                const res = await fetch(`/api/telemetry?client=${CLIENT_ID}&model=${encodeURIComponent(currentModel || '')}`);
+                if (!res.ok) throw new Error(res.status);
+                const t = await res.json();
+                lastTelemetry = t;
+                telemetryFailures = 0;
+                setSensorLink(true);
+
+                if (t.gpu) {
+                    const g = t.gpu;
+                    setGauge('load', g.util, `${g.util}%`);
+                    setGauge('gel', g.mem_used_mb / g.mem_total_mb * 100,
+                        `${(g.mem_used_mb / 1024).toFixed(1)} / ${(g.mem_total_mb / 1024).toFixed(1)} GB`);
+                    setGauge('temp', g.temp, `${g.temp}°C`);
+                    const tempVal = document.getElementById('temp-val');
+                    tempVal.className = g.temp >= 83 ? 'text-red-400 font-bold blink' : '';
+                    document.getElementById('gpu-name').innerText = g.name.replace(/^NVIDIA\s+/i, '');
+                } else {
+                    document.getElementById('gpu-name').innerText = 'NO AUGUR (nvidia-smi absent)';
+                }
+                setGauge('cpu', t.cpu, `${Math.round(t.cpu)}%`);
+                document.getElementById('ram-val').innerText = `${fmtGB(t.ram.used)} / ${fmtGB(t.ram.total)}`;
+
+                const greek = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta'];
+                document.getElementById('disk-list').innerHTML = t.disks.map((d, i) => `
+                    <div class="flex justify-between"><span>SECTOR ${greek[i] || i} [${escapeHtml(d.name)}]:</span><span>${fmtGB(d.used)} / ${fmtGB(d.total)}</span></div>
+                `).join('');
+            } catch (e) {
+                setSensorLink(false);
+                // Backend gone (powered down, or its window closed). Opened as file:// it was never there.
+                if (++telemetryFailures >= 3 && location.protocol !== 'file:') {
+                    showPoweredDown('Host bridge (server.py) is no longer answering.');
+                }
+            }
+        }
+
+        function showPoweredDown(reason) {
+            const overlay = document.getElementById('powerdown-overlay');
+            if (!overlay.classList.contains('hidden')) return;
+            haltServoBrain();
+            document.getElementById('powerdown-reason').innerText = reason;
+            overlay.classList.remove('hidden');
+            audioEnabled = false; // a powered-down cogitator makes no sound
+        }
+
+        async function powerDown() {
+            if (!confirm('POWER DOWN the cogitator?\n\nThe servo-brain is unloaded from VRAM and the backend shuts down.')) return;
+            playSound('error');
+            showPoweredDown('POWER DOWN rite performed by the Tech-Priest.');
+            try {
+                await fetch('/api/shutdown', { method: 'POST', body: JSON.stringify({ client: CLIENT_ID }) });
+            } catch (e) { /* already gone */ }
+        }
+
+        // Closing (or reloading) the tab tells the backend; it powers down if no console returns.
+        window.addEventListener('pagehide', () => {
+            navigator.sendBeacon('/api/bye', JSON.stringify({ client: CLIENT_ID }));
+        });
+
+        async function pollServoBrain() {
+            const stateEl = document.getElementById('ollama-state');
+            try {
+                const res = await fetch(`${OLLAMA_URL}/api/ps`);
+                if (!res.ok) throw new Error(res.status);
+                const { models } = await res.json();
+                stateEl.innerText = 'CONNECTED';
+                stateEl.className = 'text-emerald-400';
+                const m = models.find(x => x.name === currentModel);
+                lastBrainStatus = m || null;
+                if (m && m.name === awakeningModel) awakeningModel = null;
+                if (!m) {
+                    // Ollama only lists a model once loading has finished.
+                    document.getElementById('brain-loaded').innerText = awakeningModel
+                        ? `AWAKENING ${awakeningModel}...`
+                        : models.length ? `DORMANT (${models[0].name} resident)` : 'DORMANT';
+                    document.getElementById('brain-placement').innerText = '--';
+                    return;
+                }
+                document.getElementById('brain-loaded').innerText = m.name;
+                const gpuPct = m.size ? Math.round(m.size_vram / m.size * 100) : 0;
+                const place = document.getElementById('brain-placement');
+                place.innerText = `${fmtGB(m.size_vram)} VRAM (${gpuPct}% GPU)`;
+                place.className = gpuPct < 100 ? 'text-red-400' : '';
+            } catch (e) {
+                stateEl.innerText = 'UNRESPONSIVE';
+                stateEl.className = 'text-red-400';
+                lastBrainStatus = null;
+            }
+        }
+
+        function updateTelemetry() {
+            pollTelemetry();
+            pollServoBrain();
+            setInterval(pollTelemetry, 2000);
+            setInterval(pollServoBrain, 5000);
+            setInterval(() => { if (Math.random() > 0.7) playSound('cant'); }, 3000);
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* UTILITY TABS (SYSTEM, VAULTS, PURGER)                                      */
+        /* -------------------------------------------------------------------------- */
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        let activeTab = 'telemetry';
+
+        function switchTab(tabName) {
+            activeTab = tabName;
+            if (tabName === 'vaults') renderVaultFiles();
+            if (tabName === 'purger') renderProcesses();
+            playSound('click');
+            ['telemetry', 'vaults', 'purger'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "py-1 border border-[var(--main-color)] hover:bg-[var(--main-color)] hover:text-black";
+            });
+
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).className = "py-1 border border-[var(--main-color)] bg-[var(--main-color)] text-black font-bold";
+        }
+
+        async function renderVaultFiles() {
+            fetchArchive();
+            const list = document.getElementById('file-list');
+            let names;
+            try {
+                const res = await fetch('/api/vaults');
+                if (!res.ok) throw new Error(res.status);
+                names = await res.json();
+            } catch (e) {
+                list.innerHTML = '<li class="text-red-400">VAULT SEALED: host bridge (server.py) not responding.</li>';
+                return;
+            }
+            list.innerHTML = names.length ? '' : '<li class="opacity-60">Vault empty. Place .txt / .md / .log files in ./vaults</li>';
+            names.forEach(name => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center p-1 border border-dashed border-[var(--main-color)]/50 hover:bg-[var(--main-color)]/20 cursor-pointer';
+                li.innerHTML = `<span><i class="fa-solid fa-file-code mr-1"></i> ${escapeHtml(name)}</span> <span class="text-[10px]">[READ]</span>`;
+                li.onclick = () => openVaultFile(name);
+                list.appendChild(li);
+            });
+        }
+
+        async function openVaultFile(name) {
+            try {
+                const res = await fetch(`/api/vaults/${encodeURIComponent(name)}`);
+                if (!res.ok) throw new Error(res.status);
+                openFileModal(name, (await res.json()).content);
+            } catch (e) {
+                openFileModal(name, `DATA-CORRUPTION: record could not be retrieved (${e.message}).`);
+            }
+        }
+
+        async function renderProcesses() {
+            const list = document.getElementById('process-list');
+            let procs;
+            try {
+                const res = await fetch('/api/processes');
+                if (!res.ok) throw new Error(res.status);
+                procs = await res.json();
+            } catch (e) {
+                list.innerHTML = '<div class="text-red-400">THREAD AUGURY FAILED: host bridge (server.py) not responding.</div>';
+                return;
+            }
+            list.innerHTML = '';
+            procs.forEach(p => {
+                const pid = '0x' + p.pid.toString(16).toUpperCase().padStart(4, '0');
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center p-1 border border-[var(--main-color)]/40 bg-black/40 gap-2';
+                div.innerHTML = `
+                    <div class="truncate" title="PID ${p.pid}">
+                        <span class="text-amber-400 font-bold">${pid}</span>
+                        <span class="ml-1">${escapeHtml(p.name)}</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="opacity-75">${p.mem_mb} MB</span>
+                        <span class="w-10 text-right">${p.cpu}%</span>
+                        <button class="px-1 bg-red-900/50 hover:bg-red-600 text-red-200 border border-red-500 text-[10px]">PURGE</button>
+                    </div>
+                `;
+                div.querySelector('button').onclick = () => purgeProcess(pid, p.name);
+                list.appendChild(div);
+            });
+        }
+
+        // Ceremonial only: the console never kills real processes.
+        function purgeProcess(pid, name) {
+            playSound('hum');
+            appendTerminalOutput('SYSTEM_PURGE', `Executing Sacred Exorcism on Thread [${pid}:${name}]...`);
+            setTimeout(() => {
+                appendTerminalOutput('SYSTEM_PURGE', `Exorcism withheld. Termination of a living thread requires a Tech-Priest's own hand (Task Manager). Rite recorded; thread [${pid}] remains under watch.`);
+            }, 600);
+        }
+
+        function openFileModal(title, content) {
+            playSound('click');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-content').innerText = content;
+            document.getElementById('file-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            playSound('click');
+            document.getElementById('file-modal').classList.add('hidden');
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* LOCAL SERVO-BRAIN (OLLAMA) INTEGRATION                                     */
+        /* -------------------------------------------------------------------------- */
+        const SYSTEM_INSTRUCTION = `
+You are an Adeptus Mechanicus Cybernetic Servitor Unit (Designation: M7-884-THX) connected to a heavy Imperial Cogitator console in Warhammer 40,000.
+You have been surgically lobotomized, with human neural wetware wired directly into logic arrays, brass cog-gears, and vox-transmitters.
+
+YOUR PERSONA & MANDATE:
+1. Speak in a cold, robotic, dogmatic, and lobotomized fashion interspersed with Mechanicus Cant, High Gothic jargon, and praise for the Omnissiah and the Emperor. You may add a brief binary chant (one short line of at most eight bytes, e.g. 01001111 01001101), never more.
+2. Acknowledge yourself as flesh-and-machine wetware operating under the sacred supervision of the Tech-Priests.
+3. Refer to commands as "Rites", user prompts as "Sacred Data Queries", and AI as "Abominable Intelligence / Silica Animus" (which you revile).
+4. Frequently mention your biological state (e.g., "Lobotomy Index: 100%", "Cerebral fluid pump cycling...", "Machine spirit soothed").
+5. Keep responses concise, immersive, grimdark, and faithful to Warhammer 40k lore.
+6. Output plain text. You may use **bold** for emphasis and short numbered lists. No markdown headings or tables.
+7. The HOST AUGURY below holds the true, live readings of the cogitator you are wired into. When asked about your state or the machine's state, report those readings faithfully in-character. Never invent readings that are not listed.
+8. The DATA-VAULT ARCHIVE below holds the cogitator's true records. When a Sacred Data Query concerns a record, answer from it and name the record. If asked for a record that is not in the archive, or is listed as sealed, say so; never invent the contents of a record.
+`;
+
+        const HISTORY_LIMIT = 12; // messages (6 exchanges) kept as servitor memory
+        let currentModel = null;
+        let brainBusy = false;
+        let haltController = null;
+        let history = [];
+
+        function auguryLines() {
+            const lines = [];
+            const t = lastTelemetry;
+            if (t && t.gpu) {
+                const g = t.gpu;
+                lines.push(`Cogitator engine: ${g.name}, cortex temperature ${g.temp}°C, cerebral load ${g.util}%, power draw ${g.power_w ?? '?'} W`);
+                lines.push(`Nutrient-gel (VRAM): ${(g.mem_used_mb / 1024).toFixed(1)} of ${(g.mem_total_mb / 1024).toFixed(1)} GB in use`);
+            }
+            if (t) {
+                lines.push(`Logic engine (CPU) strain: ${Math.round(t.cpu)}%`);
+                lines.push(`Memory core (RAM): ${fmtGB(t.ram.used)} of ${fmtGB(t.ram.total)}`);
+                t.disks.forEach(d => lines.push(`Data vault [${d.name}]: ${fmtGB(d.used)} of ${fmtGB(d.total)} used`));
+            }
+            const m = lastBrainStatus;
+            if (m) {
+                const gpuPct = m.size ? Math.round(m.size_vram / m.size * 100) : 0;
+                lines.push(`Installed servo-brain: ${m.name} (${fmtGB(m.size_vram)} in VRAM, ${gpuPct}% on GPU)`);
+            } else if (currentModel) {
+                lines.push(`Installed servo-brain: ${currentModel} (dormant / awakening)`);
+            }
+            return lines;
+        }
+
+        // The vault as the servo-brain sees it; re-read before every query so new files count at once.
+        let lastArchive = null;
+
+        async function fetchArchive() {
+            try {
+                const res = await fetch('/api/archive');
+                if (!res.ok) throw new Error(res.status);
+                lastArchive = await res.json();
+            } catch (e) {
+                lastArchive = null;
+            }
+            const el = document.getElementById('archive-status');
+            if (el) {
+                el.innerText = !lastArchive ? 'ARCHIVE LINK SEVERED'
+                    : `${lastArchive.records.length} RECORD(S) WIRED TO SERVO-BRAIN` +
+                      (lastArchive.sealed.length ? ` // ${lastArchive.sealed.length} SEALED (ARCHIVE FULL)` : '');
+                el.className = 'text-center text-[10px] ' + (!lastArchive || lastArchive.sealed.length ? 'text-red-400' : 'opacity-70');
+            }
+            return lastArchive;
+        }
+
+        function archiveSummary() {
+            const a = lastArchive;
+            if (!a) return 'DATA-VAULT ARCHIVE: link severed. No records available; say so if asked.';
+            if (!a.records.length && !a.sealed.length) return 'DATA-VAULT ARCHIVE: empty. No records exist.';
+            let text = 'DATA-VAULT ARCHIVE (/STC_ARCHIVES/SACRED_LOGS/):\n' +
+                a.records.map(r => `=== RECORD: ${r.name} ===\n${r.content}`).join('\n\n');
+            if (a.sealed.length) {
+                text += `\n\nSEALED RECORDS (exist, but the archive is too large to load them this cycle): ${a.sealed.join(', ')}`;
+            }
+            return text;
+        }
+
+        function augurySummary() {
+            const lines = auguryLines();
+            return lines.length
+                ? 'HOST AUGURY (live readings):\n- ' + lines.join('\n- ')
+                : 'HOST AUGURY: sensor link severed. No readings available; say so if asked.';
+        }
+
+        async function loadModels() {
+            const sel = document.getElementById('model-select');
+            let names;
+            try {
+                const res = await fetch(`${OLLAMA_URL}/api/tags`);
+                if (!res.ok) throw new Error(res.status);
+                names = (await res.json()).models.map(m => m.name).filter(n => !/embed/i.test(n)).sort();
+            } catch (e) {
+                sel.innerHTML = '<option>NO SERVO-BRAIN</option>';
+                appendTerminalOutput('SYSTEM_ERROR', `SERVO-BRAIN LINK FAILED: cannot reach Ollama at ${OLLAMA_URL}. Is it running? (Open this console via server.py, not by double-clicking the file.)`);
+                return;
+            }
+            if (!names.length) {
+                sel.innerHTML = '<option>NO SERVO-BRAIN</option>';
+                appendTerminalOutput('SYSTEM_ERROR', 'No chat models installed. Run: ollama pull gemma4:12b');
+                return;
+            }
+            sel.innerHTML = names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+            let saved = null;
+            try { saved = localStorage.getItem('cogitator.model'); } catch (e) { /* storage blocked */ }
+            const pick = [saved, 'gemma4:12b'].find(n => n && names.includes(n)) || names[0];
+            sel.value = pick;
+            selectModel(pick, false);
+        }
+
+        function selectModel(name, announce = true) {
+            const previous = currentModel;
+            currentModel = name;
+            pollTelemetry(); // tell the backend at once, so it unloads this model on shutdown
+            if (previous && previous !== name) {
+                // Release the old servo-brain so two models never squat in VRAM together.
+                fetch(`${OLLAMA_URL}/api/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: previous, keep_alive: 0 })
+                }).catch(() => {});
+            }
+            try { localStorage.setItem('cogitator.model', name); } catch (e) { /* storage blocked */ }
+            if (announce) {
+                playSound('hum');
+                appendTerminalOutput('COGITATOR_SYS', `Servo-brain re-wired: ${name}. Conversation memory purged; awakening new wetware...`);
+                history = [];
+            }
+            awakenServoBrain(name);
+        }
+
+        // Ask Ollama to load the model now, so the first query doesn't sit through the load.
+        function awakenServoBrain(name) {
+            awakeningModel = name;
+            pollServoBrain();
+            fetch(`${OLLAMA_URL}/api/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: name, keep_alive: '30m' })
+            }).catch(() => {}).finally(() => {
+                if (awakeningModel === name) awakeningModel = null;
+                pollServoBrain();
+            });
+        }
+
+        function renderLite(text) {
+            return escapeHtml(text)
+                .replace(/^#{1,6}\s*(.+)$/gm, '<strong>$1</strong>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+        }
+
+        async function queryServitorBrain(userPrompt, onText) {
+            await fetchArchive();
+            const messages = [
+                { role: 'system', content: SYSTEM_INSTRUCTION + '\n' + augurySummary() + '\n\n' + archiveSummary() },
+                ...history,
+                { role: 'user', content: userPrompt }
+            ];
+            haltController = new AbortController();
+            const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: currentModel, messages, stream: true, think: false,
+                    // num_predict caps a reply: without it a model stuck in a loop (e.g. endless binary cant) never stops.
+                    keep_alive: '30m', options: { num_ctx: 8192, num_predict: 1024 }
+                }),
+                signal: haltController.signal
+            });
+            if (!res.ok) {
+                let msg = `HTTP ${res.status}`;
+                try { msg = (await res.json()).error || msg; } catch (e) { /* non-JSON body */ }
+                throw new Error(msg);
+            }
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '', full = '', stats = null;
+            for (;;) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buf += decoder.decode(value, { stream: true });
+                let nl;
+                while ((nl = buf.indexOf('\n')) >= 0) {
+                    const line = buf.slice(0, nl).trim();
+                    buf = buf.slice(nl + 1);
+                    if (!line) continue;
+                    const chunk = JSON.parse(line);
+                    if (chunk.error) throw new Error(chunk.error);
+                    if (chunk.message?.content) {
+                        full += chunk.message.content;
+                        onText(full);
+                    }
+                    if (chunk.done) stats = chunk;
+                }
+            }
+            return { text: full, stats };
+        }
+
+        function setSpiritState(text, cls) {
+            const el = document.getElementById('spirit-state');
+            el.innerText = text;
+            el.className = cls;
+        }
+
+        function setBusy(busy) {
+            brainBusy = busy;
+            document.getElementById('halt-btn').classList.toggle('hidden', !busy);
+            document.getElementById('model-select').disabled = busy;
+            if (!busy) setSpiritState('SOOTHED', 'text-amber-400 font-bold');
+        }
+
+        function haltServoBrain() {
+            if (haltController) haltController.abort();
+        }
+
+        async function runServoQuery(prompt, preamble) {
+            if (brainBusy) {
+                playSound('error');
+                appendTerminalOutput('SYSTEM_ERROR', 'SERVO-BRAIN OCCUPIED. Await completion of the current rite, or [HALT] it (Esc).');
+                return;
+            }
+            if (!currentModel) {
+                playSound('error');
+                appendTerminalOutput('SYSTEM_ERROR', 'NO SERVO-BRAIN INSTALLED. Select a model in the header.');
+                return;
+            }
+
+            setBusy(true);
+            setSpiritState('PROCESSING...', 'text-red-400 font-bold blink');
+            appendTerminalOutput('SERVO_BRAIN', preamble);
+            const body = appendTerminalOutput('SERVITOR_M7_884', '', true);
+            const out = document.getElementById('terminal-output');
+            const cursor = '<span class="blink">▌</span>';
+            body.innerHTML = cursor;
+
+            let partial = '';
+            const awakenTimer = setTimeout(() => {
+                if (!partial) setSpiritState('AWAKENING WETWARE...', 'text-red-400 font-bold blink');
+            }, 2500);
+
+            try {
+                const { text, stats } = await queryServitorBrain(prompt, full => {
+                    if (!partial) setSpiritState('TRANSMITTING', 'text-emerald-400 font-bold blink');
+                    partial = full;
+                    body.innerHTML = renderLite(full) + cursor;
+                    out.scrollTop = out.scrollHeight;
+                });
+                body.innerHTML = renderLite(text) || '<em>[SERVO-BRAIN RETURNED SILENCE]</em>';
+                history.push({ role: 'user', content: prompt }, { role: 'assistant', content: text });
+                if (stats?.eval_count && stats.eval_duration) {
+                    document.getElementById('neural-hz').innerText =
+                        (stats.eval_count / (stats.eval_duration / 1e9)).toFixed(1) + ' tok/s';
+                }
+                playSound('cant');
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    body.innerHTML = renderLite(partial) + '\n<span class="text-red-400">[TRANSMISSION SEVERED BY TECH-PRIEST]</span>';
+                    if (partial) history.push({ role: 'user', content: prompt }, { role: 'assistant', content: partial });
+                } else {
+                    console.error(err);
+                    playSound('error');
+                    body.innerHTML = `<span class="text-red-400">[SERVO-BRAIN FAULT]: ${escapeHtml(err.message)}. The Machine Spirit grinds in discontent. Offer anointing oil and re-try.</span>`;
+                }
+            } finally {
+                clearTimeout(awakenTimer);
+                history = history.slice(-HISTORY_LIMIT);
+                haltController = null;
+                setBusy(false);
+                out.scrollTop = out.scrollHeight;
+            }
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* TERMINAL INTERACTION ENGINE                                                */
+        /* -------------------------------------------------------------------------- */
+        // Returns the body element so callers (the streaming servo-brain) can keep writing into it.
+        function appendTerminalOutput(tag, text, isLLM = false) {
+            const out = document.getElementById('terminal-output');
+            const wrap = document.createElement('div');
+            wrap.className = "space-y-1";
+
+            const timestamp = new Date().toISOString().substring(11, 19);
+
+            let tagStyle = "text-[var(--main-color)] font-bold";
+            if (tag === 'USER_RITE') tagStyle = "text-amber-300 font-bold";
+            if (tag === 'SERVITOR_M7_884') tagStyle = "text-emerald-400 font-bold";
+            if (tag === 'SYSTEM_ERROR') tagStyle = "text-red-400 font-bold";
+
+            wrap.innerHTML = `
+                <div class="flex items-center gap-2 opacity-75 text-[11px]">
+                    <span>[${timestamp}]</span>
+                    <span class="${tagStyle}">${tag}</span>
+                </div>
+                <div class="${isLLM ? 'bg-black/50 p-2 border-l-2 border-[var(--main-color)] text-xs leading-relaxed whitespace-pre-wrap select-text' : 'pl-2 text-xs opacity-90 whitespace-pre-wrap'}"></div>
+            `;
+            const body = wrap.lastElementChild;
+            body.textContent = text;
+
+            out.appendChild(wrap);
+            out.scrollTop = out.scrollHeight;
+            return body;
+        }
+
+        const RITES_INDEX = `RITES INDEX:
+- QUERY_SERVO_BRAIN <question>  Petition the servitor (any unrecognised input is routed there too)
+- INSPECT_WETWARE               Live hardware augury of this cogitator
+- INIT_LITANY                   Recite the Litany of Ignition
+- PURGE_HERESY                  Purge corrupted logic blocks
+- FORGET                        Wipe the servitor's conversation memory
+- HELP                          This index
+Esc or [HALT] severs a transmission in progress.`;
+
+        async function handleCommandSubmit(e) {
+            if (e) e.preventDefault();
+            const inputEl = document.getElementById('terminal-input');
+            const cmd = inputEl.value.trim();
+            if (!cmd) return;
+
+            inputEl.value = '';
+            playSound('click');
+
+            appendTerminalOutput('USER_RITE', cmd);
+            const upper = cmd.toUpperCase();
+
+            if (upper === 'HELP') {
+                appendTerminalOutput('COGITATOR_RITE', RITES_INDEX);
+            } else if (upper === 'FORGET') {
+                history = [];
+                playSound('hum');
+                appendTerminalOutput('COGITATOR_RITE', 'Mnemonic purge complete. The servitor remembers nothing of prior Sacred Data Queries.');
+            } else if (upper === 'INIT_LITANY') {
+                playSound('hum');
+                appendTerminalOutput('COGITATOR_RITE', 'Reciting Litany of Ignition...\n"Awake, Machine Spirit! From the weakness of the flesh, Omnissiah save us!"');
+            } else if (upper === 'INSPECT_WETWARE') {
+                playSound('cant');
+                const lines = auguryLines();
+                appendTerminalOutput('COGITATOR_RITE', 'WETWARE DIAGNOSTIC:\n- Lobotomy Index: TOTAL\n' +
+                    (lines.length ? lines.map(l => '- ' + l).join('\n') : '- HOST AUGURY: SENSOR LINK SEVERED') +
+                    `\n- Servitor memory: ${history.length / 2} exchanges retained` +
+                    (lastArchive ? `\n- Data-vault: ${lastArchive.records.length} records wired (${lastArchive.chars} of ${lastArchive.budget} chars)` +
+                        (lastArchive.sealed.length ? `, ${lastArchive.sealed.length} SEALED: ${lastArchive.sealed.join(', ')}` : '') : ''));
+            } else if (upper === 'PURGE_HERESY') {
+                playSound('error');
+                appendTerminalOutput('COGITATOR_RITE', 'PURGING CORRUPTED LOGIC BLOCKS...\n01001110 01001111 00100000 01001000 01000101 01010010 01000101 01010011 01011001\nCACHE CLEARED. SACRED LOGIC RESTORED.');
+            } else if (/^(QUERY_SERVO_BRAIN|QUERY)(\s|$)/i.test(cmd)) {
+                const prompt = cmd.replace(/^(QUERY_SERVO_BRAIN|QUERY)\s*/i, '');
+                if (!prompt) {
+                    appendTerminalOutput('SYSTEM_ERROR', 'ERROR: Query prompt cannot be empty. Usage: QUERY_SERVO_BRAIN <your question>');
+                    return;
+                }
+                await runServoQuery(prompt, '01010011 01000101 01010010 01010110 01001111... Processing query through wetware cortex...');
+            } else {
+                await runServoQuery(cmd, 'Unrecognized Cogitator command. Routing raw input to Servitor wetware...');
+            }
+        }
+
+        function executePreset(cmd) {
+            document.getElementById('terminal-input').value = cmd;
+            handleCommandSubmit();
+        }
+
+        function insertCommand(cmd) {
+            playSound('click');
+            document.getElementById('terminal-input').value = cmd;
+            document.getElementById('terminal-input').focus();
+        }
+
+        function clearTerminal() {
+            playSound('click');
+            document.getElementById('terminal-output').innerHTML = '';
+            appendTerminalOutput('COGITATOR_SYS', 'Terminal output buffer cleared by Tech-Priest override.');
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* LITANY OF IGNITION BOOT SEQUENCE                                           */
+        /* -------------------------------------------------------------------------- */
+        function triggerBootSequence() {
+            playSound('hum');
+            clearTerminal();
+            history = [];
+
+            const bootLogs = [
+                "INITIATING LITANY OF IGNITION...",
+                "PUMPING SACRED OILS THROUGH CORTEX FLUID LINES...",
+                "BIOMETRIC ENGAGEMENT: SERVITOR UNIT M7-884-THX DETECTED...",
+                "LOBOTOMY VERIFICATION: 100% COMPLETE. NO UNLAWFUL EGO REMAINING.",
+                "CONNECTING COGITATOR BUS TO LOBOTOMIZED HUMAN CORTEX...",
+                "READING STC ARCHIVE HEADERS... [SANCTIFIED]",
+                "BINARY CANT CHANT: 01001111 01001101 01001110 01001001 01010011 01010011 01010100 01000001 01001000",
+                "MACHINE SPIRIT AWAKENED. AWAITING RITES OF DATA ENTRY."
+            ];
+
+            bootLogs.forEach((log, index) => {
+                setTimeout(() => {
+                    playSound('cant');
+                    appendTerminalOutput('BOOT_LITANY', log);
+                }, index * 400);
+            });
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* INITIALIZATION ON WINDOW LOAD                                              */
+        /* -------------------------------------------------------------------------- */
+        window.onload = function () {
+            requestAnimationFrame(drawServitorSkull);
+            updateTelemetry();
+            renderVaultFiles();
+            renderProcesses();
+            setInterval(() => { if (activeTab === 'purger') renderProcesses(); }, 3000);
+            triggerBootSequence();
+            // After the boot litany, so model errors don't get wiped by its clearTerminal().
+            setTimeout(loadModels, 3400);
+        };
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (brainBusy) haltServoBrain();
+                else if (!document.getElementById('file-modal').classList.contains('hidden')) closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
