@@ -2,7 +2,7 @@
 
 *An unofficial fan-made servitor console, inspired by Warhammer 40,000, running entirely on your own PC.*
 
-![Cogitator console](docs/screenshot.png)
+![Cogitator console](docs/screenshot.webp)
 
 A CRT-styled Adeptus Mechanicus terminal that wires a **local LLM** (via [Ollama](https://ollama.com))
 into a lobotomised servitor persona, and feeds it **real readings from your machine**: GPU load,
